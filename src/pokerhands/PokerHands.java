@@ -38,6 +38,9 @@ public class PokerHands {
             }while(prompt == true);
         }
         
+        
+    }    
+    public static void test(){
         String sampleInput = 
                 "Black: 2H 3D 5S 9C KD  White: 2C 3H 4S 8C AH\n" +
                 "Black: 2H 4S 4C 2D 4H  White: 2S 8S AS QS 3S\n" +
@@ -62,5 +65,5 @@ public class PokerHands {
         System.out.println(round3);
         System.out.println(round4);
         System.out.println(round5);
-    }    
+    }
 }
