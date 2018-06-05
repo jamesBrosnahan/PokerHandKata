@@ -5,8 +5,13 @@
  */
 package pokerhands;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.Collections;
 import java.util.Scanner;
+import java.util.regex.MatchResult;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  *
@@ -18,28 +23,75 @@ public class PokerHands {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        // TODO code application logic here
-        if(args == null || true){
-            boolean prompt = true;
-            game round;
-            String hands = "";
-            Scanner scanner = new Scanner(System.in);
-            do{
-                System.out.println("Enter two hands in the form");
-                System.out.println("ex: Black: 2H 3D 5S 9C KD  White: 2C 3H 4S 8C AH");
-                hands = scanner.nextLine();
-                round = new game(hands);
-                System.out.println(round);
-                System.out.println("Do you want to enter another two poker hands? Y/N");
-                String answer = scanner.nextLine();
-                if(answer.equals("N") || answer.equals("n")){
-                    prompt = false;
-                }
-            }while(prompt == true);
-        }
-        
-        
+        readFromStdin();
     }    
+    public static void readFromStdin(){
+        boolean prompt = true;
+        String handRegexString = "\\b(((\\w)*):(\\s(\\d|T|J|Q|K|A)(?=(H|D|S|C))(H|D|S|C))*)";
+                //"(\\w*(?=:)).*";
+                //"( ([2-9]|T|J|Q|K|A)(?=(H|D|C|S)))+";
+        String test = "Black: 2H 3D 5S 9C KD  White: 2C 3H 4S 8C AH";
+        String[] playerStrings;
+        Pattern handRegexPattern = Pattern.compile(handRegexString);
+        game round;
+        System.out.println("Try block");
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Scanner created");
+        do{
+            System.out.println("Enter two hands in the form");
+            System.out.println("ex: Black: 2H 3D 5S 9C KD  White: 2C 3H 4S 8C AH");
+            playerStrings = new String[2];
+            Matcher m = handRegexPattern.matcher(scanner.nextLine());
+            while(m.find()){
+                if(playerStrings[0] == null){
+                    playerStrings[0] = m.group(1);
+                }else if(playerStrings[1] == null){
+                    playerStrings[1] = m.group(1);
+                }
+            }
+            round = new game(playerStrings[0], playerStrings[1]);
+            System.out.println(round);
+            System.out.println("Do you want to enter another two poker hands? Y/N");
+            String answer = scanner.nextLine();
+            if(answer.equals("N") || answer.equals("n")){
+                prompt = false;
+            }
+        }while(prompt == true);
+    }
+    
+    public static void readFromFile(String filePath){
+        File sampleInputFile = new File(filePath);
+        String handRegexString = "\\b(((\\w)*):(\\s(\\d|T|J|Q|K|A)(?=(H|D|S|C))(H|D|S|C)){5})";
+                //"(\\w*(?=:)).*";
+                //"( ([2-9]|T|J|Q|K|A)(?=(H|D|C|S)))+";
+        String test = "Black: 2H 3D 5S 9C KD  White: 2C 3H 4S 8C AH";
+        String[] playerStrings;
+        Pattern handRegexPattern = Pattern.compile(handRegexString);
+        game round;
+        try{
+            System.out.println("Try block");
+            Scanner scanner = new Scanner(sampleInputFile);
+            System.out.println("Scanner created");
+            while(scanner.hasNextLine()){
+                playerStrings = new String[2];
+                if(scanner.hasNext(handRegexPattern)){
+                    System.out.println(scanner.next(handRegexPattern));
+                }
+                Matcher m = handRegexPattern.matcher(scanner.nextLine());
+                while(m.find()){
+                    if(playerStrings[0] == null){
+                        playerStrings[0] = m.group(1);
+                    }else if(playerStrings[1] == null){
+                        playerStrings[1] = m.group(1);
+                    }
+                }
+                round = new game(playerStrings[0], playerStrings[1]);
+                System.out.println(round);
+            }
+        }catch(FileNotFoundException e){
+            System.exit(0);
+        }
+    }
     public static void test(){
         String sampleInput = 
                 "Black: 2H 3D 5S 9C KD  White: 2C 3H 4S 8C AH\n" +

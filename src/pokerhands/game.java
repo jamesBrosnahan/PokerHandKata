@@ -18,7 +18,7 @@ public class game {
     private player player2;
     private comparisonHelperFunctions comparisonHelper = new comparisonHelperFunctions();
     public game(String Input){
-        Input.replace("\0", "");
+        Input.replace(null, "");
         String [] playerStrings = Input.split("  ");
         this.player1 = new player(playerStrings[0]);
         this.player2 = new player(playerStrings[1]);
@@ -26,6 +26,16 @@ public class game {
     public game(player player1, player player2){
         this.player1 = player1;
         this.player2 = player2;
+    }
+    public game(String leftHand, String rightHand){
+        this.player1 = new player(leftHand);
+        this.player2 = new player(rightHand);
+    }
+    public game(String[] playerStrings){
+        if(playerStrings[0] != null && playerStrings[1] != null){
+            this.player1 = new player(playerStrings[0]);
+            this.player2 = new player(playerStrings[1]);
+        }
     }
     @Override
     public String toString(){
